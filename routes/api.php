@@ -9,4 +9,5 @@ Route::prefix('v1')->group(function () {
     
     // AUTH
     Route::post('/register', [RegisterController::class, 'register']);
+    Route::post('/checking-user', [RegisterController::class, 'checkLogin']);
 });

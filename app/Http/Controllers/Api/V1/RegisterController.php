@@ -38,4 +38,35 @@ class RegisterController extends Controller
             ], 500);
         }
     }
+
+    public function checkLogin(Request $request) {
+        try {
+            $request->validate([
+                'email' => 'required|email',
+                'password' => 'required|string|min:6',
+            ]);
+            $user = User::where('email', $request->email)->first();
+            if (!$user || !Hash::check($request->password, $user->password)) {
+                return response()->json([
+                    'status' => 500,
+                    'message' => 'Email or password is incorrect',
+                    'data' => []
+                ], 500);
+            }
+            $tokens = $user->createToken('hype-shpere')->plainTextToken;
+            return response()->json([
+                'status' => 200,
+                'message' => 'User logged in successfully',
+                'data' => $user,
+                'token' => $tokens
+            ]);
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => $e->errors(),
+                'data' => []
+            ], 500);
+        }
+    }
 }
