@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -8,37 +8,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
-class RegisterController extends Controller
+class LoginController extends Controller
 {
-    public function register(Request $request) {
-        try {
-            $request->validate([
-                'name' => 'required|string',
-                'email' => 'required|email|unique:users',
-                'password' => 'required|string|min:6',
-            ]);
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-            ]);
-
-
-            return response()->json([
-                'status' => 200,
-                'message' => 'User created successfully',
-                'data' => $user,
-            ]);
-
-        } catch (ValidationException $e) {
-            return response()->json([
-                'status' => 500,
-                'message' => $e->errors(),
-                'data' => []
-            ], 500);
-        }
-    }
-
     public function checkLogin(Request $request) {
         try {
             $request->validate([
@@ -59,8 +30,25 @@ class RegisterController extends Controller
                 'message' => 'User logged in successfully',
                 'data' => $user,
                 'token' => $tokens
-            ]);
+            ], 200);
 
+        } catch (ValidationException $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => $e->errors(),
+                'data' => []
+            ], 500);
+        }
+    }
+
+    public function logout(Request $request) {
+        try {
+            $request->user()->currentAccessToken()->delete();
+            return response()->json([
+                'status' => 200,
+                'message' => 'User logged out successfully',
+                'data' => []
+            ], 200);
         } catch (ValidationException $e) {
             return response()->json([
                 'status' => 500,
