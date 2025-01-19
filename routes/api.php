@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Auth\LoginController;
+use App\Http\Controllers\Api\V1\InterestingController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
 use App\Http\Controllers\Api\V1\Auth\SocialiteController;
 
@@ -19,5 +20,8 @@ Route::prefix('v1')->group(function () {
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/logout-user', [LoginController::class, 'logout']);
+
+        // INTERESTING
+        Route::post('/interesting', [InterestingController::class, 'store']);
     });
 });
