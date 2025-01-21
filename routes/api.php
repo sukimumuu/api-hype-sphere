@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\V1\Get\UserController;
 use App\Http\Controllers\Api\V1\Auth\LoginController;
 use App\Http\Controllers\Api\V1\InterestingController;
 use App\Http\Controllers\Api\V1\Auth\RegisterController;
@@ -18,10 +19,13 @@ Route::prefix('v1')->group(function () {
     Route::get('/github/redirect', [SocialiteController::class, 'redirectToProviderGithub']);
     Route::get('/github/callback', [SocialiteController::class, 'handleProviderCallbackGithub']);
 
-    Route::middleware(['auth:sanctum'])->group(function () {
+    // Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/logout-user', [LoginController::class, 'logout']);
 
         // INTERESTING
         Route::post('/interesting', [InterestingController::class, 'store']);
-    });
+
+        // USER
+        Route::get('/get-user', [UserController::class, 'getUser']);
+    // });
 });
