@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Cookie;
 
 class LoginController extends Controller
 {
@@ -24,13 +25,13 @@ class LoginController extends Controller
                     'data' => []
                 ], 500);
             }
-            $tokens = $user->createToken('hype-shpere')->plainTextToken;
+            $token = $user->createToken('hype-shpere')->plainTextToken;
+            $cookie = cookie('auth_token', $token, 60);
             return response()->json([
                 'status' => 200,
                 'message' => 'User logged in successfully',
                 'data' => $user,
-                'token' => $tokens
-            ], 200);
+            ], 200)->cookie($cookie);
 
         } catch (ValidationException $e) {
             return response()->json([
