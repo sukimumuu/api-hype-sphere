@@ -31,7 +31,7 @@ class LoginController extends Controller
                 'status' => 200,
                 'message' => 'User logged in successfully',
                 'data' => $user,
-            ], 200)->cookie($cookie);
+            ], 200)->cookie('auth_token', $token, 60);
 
         } catch (ValidationException $e) {
             return response()->json([

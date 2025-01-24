@@ -10,34 +10,31 @@ use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
-    protected $userId;
-
-    public function __construct() {
-        $this->userId = Auth::guard('sanctum')->user()->id;
-    }
-
-    public function getUser(Request $request){
-
-        $data = User::find($this->userId);
+    public function getUser(Request $request)
+    {
         try {
+            $userId = Auth::guard('sanctum')->id();
+            $data = User::find($userId);
             if (!$data) {
                 return response()->json([
-                    'status' => 500,
+                    'status' => 404,
                     'message' => 'User not found',
-                    'data' => []
-                ], 500);
+                    'data' => null,
+                ], 404);
             }
             return response()->json([
                 'status' => 200,
                 'message' => 'User fetched successfully',
-                'data' => $data
+                'data' => $data,
             ], 200);
-        } catch (ValidationException $e) {
+        } catch (Exception $e) {
+          
             return response()->json([
                 'status' => 500,
-                'message' => 'Error',
-                'data' => []
-            ]);
+                'message' => 'An error occurred while fetching the user data.',
+                'error' => $e->getMessage(),
+                'data' => null,
+            ], 500);
         }
     }
 }
